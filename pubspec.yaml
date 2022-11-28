@@ -1,0 +1,54 @@
+name: task_2_sqflite
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  carousel_slider: ^4.1.1
+  cupertino_icons: ^1.0.2
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  get_it: ^7.2.0
+  sqflite: ^2.2.0+3
+  flutter_bloc: ^8.1.1
+  image_picker: ^0.8.6
+  flutter_staggered_grid_view: ^0.6.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets: 
+    - assets/images/puresoft_logo.jpg
+    - assets/images/slider1.jpeg
+    - assets/images/slider2.jpeg
+    - assets/images/slider3.jpg
+    - assets/images/slider4.jpeg
+
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Cairo-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Cairo-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Cairo-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Cairo-Light.ttf
+          weight: 300
