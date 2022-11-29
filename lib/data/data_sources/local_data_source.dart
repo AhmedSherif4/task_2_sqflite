@@ -54,6 +54,34 @@ class SQLDatabase {
     }
   }
 
+  // create with batch
+  // batch for multi tables at once, and generally he make multi things at once
+  FutureOr<void> _onCreateWithBatch(Database db, int version) async {
+    Batch batch = db.batch();
+    batch.execute('''
+    CREATE TABLE $tableName 
+    (
+    $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $columnTitle TEXT NOT NULL,
+    $columnBody TEXT NOT NULL,
+    $columnImagePath TEXT NOT NULL
+    )
+    ''');
+    batch.execute('''
+    CREATE TABLE newTable 
+    (
+    "$columnId" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "age" INTEGER NOT NULL,
+    "address" TEXT NOT NULL
+    )
+    ''');
+    await batch.commit();
+    if (kDebugMode) {
+      print('database and tables are created --------------------------------');
+    }
+  }
+
   // = select
   Future<List<DepartmentModel>> readDatabase() async {
     Database? readDatabase = await database;
@@ -103,6 +131,62 @@ class SQLDatabase {
     $tableName ($columnTitle , $columnBody , $columnImagePath) 
     VALUES ("${department.title}" , "${department.body}" , "${department.imagePath}")
     ''');
+    print('inserted --------------------------------');
+    return response;
+  }
+
+//shortcuts
+  // = select
+  // return List of map of row that were found (default)
+  Future<List<DepartmentModel>> readDatabaseShortcut() async {
+    Database? readDatabase = await database;
+    List<Map<String, Object?>> response =
+        /* you just add table name, thats it */
+        await readDatabase!.query('${tableName}');
+    final List<DepartmentModel> departmentModel = response
+        .map<DepartmentModel>((jsonDepartmentMode) =>
+            DepartmentModel.fromJson(jsonDepartmentMode))
+        .toList();
+    print('readed --------------------------------');
+    return departmentModel;
+  }
+
+  // = delete
+  // return 0 if it did not delete, 1 if it deleted.
+  Future<int> deleteDatabaseShortcut(int id) async {
+    Database? deleteDatabase = await database;
+    Future<int> response = deleteDatabase!
+        /* you just add table name, where: condition (like ==) whereArgs: the value of condition */
+        .delete('${tableName}', where: 'id = ?', whereArgs: ['$id']);
+    return response;
+  }
+
+  // = update
+  // return 0 if it did not update, 1 if it updated.
+
+  Future<int> updateDatabaseShortcut(
+      int id, String newTitle, String newBody) async {
+    Database? updateDatabase = await database;
+    /* you just add table name,(colum and new value) as map, where: condition, (?) = whereArgs */
+    Future<int> response = updateDatabase!.update(
+        '$tableName', {'$columnTitle': '$newTitle', '$columnBody': '$newBody'},
+        where: 'id = $id');
+    return response;
+  }
+
+  // = insert
+  // return last inserted row id.
+  Future<int> insertDatabaseShortcut(DepartmentModel department) async {
+    Database? insertDatabase = await database;
+    /* you just add table name,(values) columns and values: as map */
+    Future<int> response = insertDatabase!.insert(
+      '$tableName',
+      {
+        '$columnTitle': department.title,
+        '$columnBody': department.body,
+        '$columnImagePath': department.imagePath,
+      },
+    );
     print('inserted --------------------------------');
     return response;
   }
